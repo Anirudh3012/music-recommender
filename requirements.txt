@@ -6,3 +6,4 @@ requests
 pandas
 scikit-learn
 pylast==5.1.0
+flask
