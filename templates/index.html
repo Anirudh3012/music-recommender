@@ -301,6 +301,64 @@
             color: rgba(255, 255, 255, 0.8);
             line-height: 1.5;
             font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .streaming-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .streaming-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .streaming-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .spotify-btn {
+            background: #1DB954;
+            color: white;
+            border-color: #1DB954;
+        }
+
+        .spotify-btn:hover {
+            background: #1ed760;
+            color: white;
+        }
+
+        .apple-music-btn {
+            background: linear-gradient(135deg, #FA2D48 0%, #FF6B6B 100%);
+            color: white;
+            border-color: #FA2D48;
+        }
+
+        .apple-music-btn:hover {
+            background: linear-gradient(135deg, #ff3d5a 0%, #ff7b7b 100%);
+            color: white;
+        }
+
+        .youtube-btn {
+            background: #FF0000;
+            color: white;
+            border-color: #FF0000;
+        }
+
+        .youtube-btn:hover {
+            background: #ff1a1a;
+            color: white;
         }
 
         .error {
@@ -541,6 +599,24 @@
                 // Try to get album art
                 const albumArtUrl = await getAlbumArt(rec.artist || 'Unknown Artist', rec.title || 'Unknown Title');
                 
+                // Generate streaming links HTML
+                let streamingLinksHtml = '';
+                if (rec.streaming_links) {
+                    streamingLinksHtml = `
+                        <div class="streaming-links">
+                            <a href="${rec.streaming_links.spotify}" target="_blank" class="streaming-btn spotify-btn">
+                                🎵 Spotify
+                            </a>
+                            <a href="${rec.streaming_links.apple_music}" target="_blank" class="streaming-btn apple-music-btn">
+                                🍎 Apple Music
+                            </a>
+                            <a href="${rec.streaming_links.youtube}" target="_blank" class="streaming-btn youtube-btn">
+                                ▶️ YouTube
+                            </a>
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div class="album-art">
                         ${albumArtUrl ? 
@@ -553,6 +629,7 @@
                         <h3>${rec.title || 'Unknown Title'}</h3>
                         <div class="artist">by ${rec.artist || 'Unknown Artist'}</div>
                         <div class="justification">${rec.justification || 'No description available'}</div>
+                        ${streamingLinksHtml}
                     </div>
                 `;
                 recommendationGrid.appendChild(card);

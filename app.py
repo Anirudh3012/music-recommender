@@ -73,6 +73,40 @@ def get_album_art():
         print(f"Album art error for {artist} - {title}: {e}")
         return jsonify({'album_art_url': None})
 
+def generate_streaming_links(artist, title):
+    """Generate streaming service links for a song"""
+    import urllib.parse
+    
+    # Clean up artist and title for URL encoding
+    clean_artist = artist.replace(' & ', ' ').replace('&', 'and')
+    clean_title = title
+    
+    # URL encode for safe usage in URLs
+    encoded_artist = urllib.parse.quote_plus(clean_artist)
+    encoded_title = urllib.parse.quote_plus(clean_title)
+    encoded_query = urllib.parse.quote_plus(f"{clean_artist} {clean_title}")
+    
+    links = {
+        'spotify': f"https://open.spotify.com/search/{encoded_query}",
+        'apple_music': f"https://music.apple.com/search?term={encoded_query}",
+        'youtube': f"https://www.youtube.com/results?search_query={encoded_query}"
+    }
+    
+    # Try to get exact Spotify link if possible
+    if sp_client:
+        try:
+            search_query = f"artist:{clean_artist} track:{clean_title}"
+            results = sp_client.search(q=search_query, type='track', limit=1)
+            if results['tracks']['items']:
+                track = results['tracks']['items'][0]
+                spotify_url = track['external_urls'].get('spotify')
+                if spotify_url:
+                    links['spotify'] = spotify_url
+        except Exception as e:
+            print(f"Could not get exact Spotify link for {artist} - {title}: {e}")
+    
+    return links
+
 @app.route('/get_recommendations', methods=['POST'])
 def get_recommendations():
     data = request.get_json()
@@ -148,6 +182,11 @@ def get_recommendations():
         )
         
         if recommendations:
+            # Add streaming links to each recommendation
+            for rec in recommendations:
+                if 'artist' in rec and 'title' in rec:
+                    rec['streaming_links'] = generate_streaming_links(rec['artist'], rec['title'])
+            
             return jsonify({'recommendations': recommendations})
         else:
             return jsonify({'error': 'Could not generate recommendations'})
