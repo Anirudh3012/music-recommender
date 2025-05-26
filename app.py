@@ -47,6 +47,32 @@ def search_songs():
         print(f"Search error: {e}")
         return jsonify([])
 
+@app.route('/get_album_art')
+def get_album_art():
+    artist = request.args.get('artist', '').strip()
+    title = request.args.get('title', '').strip()
+    
+    if not artist or not title or not sp_client:
+        return jsonify({'album_art_url': None})
+    
+    try:
+        # Search for the track on Spotify to get album art
+        search_query = f"artist:{artist} track:{title}"
+        results = sp_client.search(q=search_query, type='track', limit=1)
+        
+        if results['tracks']['items']:
+            track = results['tracks']['items'][0]
+            album_images = track['album']['images']
+            if album_images:
+                # Get the medium-sized image (usually index 1, or fallback to first)
+                album_art_url = album_images[1]['url'] if len(album_images) > 1 else album_images[0]['url']
+                return jsonify({'album_art_url': album_art_url})
+        
+        return jsonify({'album_art_url': None})
+    except Exception as e:
+        print(f"Album art error for {artist} - {title}: {e}")
+        return jsonify({'album_art_url': None})
+
 @app.route('/get_recommendations', methods=['POST'])
 def get_recommendations():
     data = request.get_json()

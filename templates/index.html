@@ -13,8 +13,9 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
             min-height: 100vh;
             padding: 20px;
         }
@@ -22,28 +23,49 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(28, 28, 30, 0.95);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff1744 0%, #ff6b6b 50%, #ffa726 100%);
             color: white;
             padding: 40px;
             text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
-            font-weight: 300;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             opacity: 0.9;
+            font-weight: 400;
         }
 
         .content {
@@ -54,6 +76,13 @@
             margin-bottom: 40px;
         }
 
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
         .input-group {
             position: relative;
             margin-bottom: 20px;
@@ -61,16 +90,25 @@
 
         .song-input {
             width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 50px;
+            padding: 16px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: rgba(58, 58, 60, 0.8);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+        }
+
+        .song-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .song-input:focus {
-            border-color: #667eea;
+            border-color: #ff1744;
+            background: rgba(58, 58, 60, 1);
+            box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.1);
         }
 
         .suggestions {
@@ -78,25 +116,27 @@
             top: 100%;
             left: 0;
             right: 0;
-            background: white;
-            border: 1px solid #e1e5e9;
-            border-radius: 10px;
+            background: rgba(44, 44, 46, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             max-height: 300px;
             overflow-y: auto;
             z-index: 1000;
             display: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(20px);
         }
 
         .suggestion-item {
             padding: 15px 20px;
             cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             transition: background-color 0.2s ease;
+            color: #ffffff;
         }
 
         .suggestion-item:hover {
-            background-color: #f8f9fa;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .suggestion-item:last-child {
@@ -108,41 +148,52 @@
         }
 
         .song-tag {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 23, 68, 0.2);
+            color: #ffffff;
             padding: 8px 15px;
             margin: 5px;
             border-radius: 20px;
             font-size: 14px;
             position: relative;
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .song-tag .remove {
             margin-left: 10px;
             cursor: pointer;
             font-weight: bold;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .song-tag .remove:hover {
+            opacity: 1;
         }
 
         .get-recommendations-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff1744 0%, #ff6b6b 100%);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
+            padding: 16px 32px;
+            border-radius: 25px;
             font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.3s ease;
             margin-top: 20px;
+            box-shadow: 0 4px 20px rgba(255, 23, 68, 0.3);
         }
 
         .get-recommendations-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 30px rgba(255, 23, 68, 0.4);
         }
 
         .get-recommendations-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
@@ -154,8 +205,8 @@
         }
 
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #ff1744;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -174,11 +225,11 @@
         }
 
         .recommendations h2 {
-            color: #333;
+            color: #ffffff;
             margin-bottom: 30px;
             text-align: center;
             font-size: 2rem;
-            font-weight: 300;
+            font-weight: 600;
         }
 
         .recommendation-grid {
@@ -188,49 +239,84 @@
         }
 
         .recommendation-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border-left: 4px solid #667eea;
+            background: rgba(44, 44, 46, 0.8);
+            border-radius: 16px;
+            padding: 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
         }
 
         .recommendation-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 23, 68, 0.3);
+        }
+
+        .album-art {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #ff1744 0%, #ff6b6b 50%, #ffa726 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .album-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .album-art .music-note {
+            font-size: 4rem;
+            opacity: 0.3;
+            color: white;
+        }
+
+        .card-content {
+            padding: 20px;
         }
 
         .recommendation-card h3 {
-            color: #333;
+            color: #ffffff;
             margin-bottom: 8px;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            line-height: 1.3;
         }
 
         .recommendation-card .artist {
-            color: #667eea;
-            font-weight: 600;
+            color: #ff6b6b;
+            font-weight: 500;
             margin-bottom: 15px;
+            font-size: 1rem;
         }
 
         .recommendation-card .justification {
-            color: #666;
-            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
             font-size: 14px;
         }
 
         .error {
-            background: #ff6b6b;
+            background: rgba(255, 59, 48, 0.9);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 16px 20px;
+            border-radius: 12px;
             margin: 20px 0;
             display: none;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.5rem;
             }
             
             .content {
@@ -240,19 +326,48 @@
             .recommendation-grid {
                 grid-template-columns: 1fr;
             }
+
+            .album-art {
+                height: 150px;
+            }
+
+            .album-art .music-note {
+                font-size: 3rem;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 23, 68, 0.6);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 23, 68, 0.8);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎵 Music Recommender</h1>
-            <p>Discover new music based on your favorite songs</p>
+            <div class="header-content">
+                <h1>🎵 Music Recommender</h1>
+                <p>Discover new music based on your favorite songs</p>
+            </div>
         </div>
         
         <div class="content">
             <div class="song-input-section">
-                <h2>Add Your Favorite Songs</h2>
+                <h2 class="section-title">Add Your Favorite Songs</h2>
                 <div class="input-group">
                     <input type="text" class="song-input" id="songInput" placeholder="Start typing a song name...">
                     <div class="suggestions" id="suggestions"></div>
@@ -405,19 +520,43 @@
             }
         });
 
-        function displayRecommendations(recs) {
+        async function getAlbumArt(artist, title) {
+            try {
+                const response = await fetch(`/get_album_art?artist=${encodeURIComponent(artist)}&title=${encodeURIComponent(title)}`);
+                const data = await response.json();
+                return data.album_art_url || null;
+            } catch (error) {
+                console.error('Album art error:', error);
+                return null;
+            }
+        }
+
+        async function displayRecommendations(recs) {
             recommendationGrid.innerHTML = '';
             
-            recs.forEach((rec, index) => {
+            for (const [index, rec] of recs.entries()) {
                 const card = document.createElement('div');
                 card.className = 'recommendation-card';
+                
+                // Try to get album art
+                const albumArtUrl = await getAlbumArt(rec.artist || 'Unknown Artist', rec.title || 'Unknown Title');
+                
                 card.innerHTML = `
-                    <h3>${rec.title || 'Unknown Title'}</h3>
-                    <div class="artist">by ${rec.artist || 'Unknown Artist'}</div>
-                    <div class="justification">${rec.justification || 'No description available'}</div>
+                    <div class="album-art">
+                        ${albumArtUrl ? 
+                            `<img src="${albumArtUrl}" alt="Album art" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <div class="music-note" style="display: none;">🎵</div>` :
+                            `<div class="music-note">🎵</div>`
+                        }
+                    </div>
+                    <div class="card-content">
+                        <h3>${rec.title || 'Unknown Title'}</h3>
+                        <div class="artist">by ${rec.artist || 'Unknown Artist'}</div>
+                        <div class="justification">${rec.justification || 'No description available'}</div>
+                    </div>
                 `;
                 recommendationGrid.appendChild(card);
-            });
+            }
             
             recommendations.style.display = 'block';
             recommendations.scrollIntoView({ behavior: 'smooth' });
