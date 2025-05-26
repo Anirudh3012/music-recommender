@@ -36,11 +36,18 @@ def search_songs():
         results = sp_client.search(q=query, type='track', limit=10)
         suggestions = []
         for track in results['tracks']['items']:
+            # Get album art URL (prefer medium size, fallback to largest available)
+            album_art_url = None
+            if track['album']['images']:
+                # Try to get medium-sized image (usually index 1), fallback to first available
+                album_art_url = track['album']['images'][1]['url'] if len(track['album']['images']) > 1 else track['album']['images'][0]['url']
+            
             suggestions.append({
                 'id': track['id'],
                 'name': track['name'],
                 'artist': ', '.join([artist['name'] for artist in track['artists']]),
-                'display': f"{', '.join([artist['name'] for artist in track['artists']])} - {track['name']}"
+                'display': f"{', '.join([artist['name'] for artist in track['artists']])} - {track['name']}",
+                'album_art_url': album_art_url
             })
         return jsonify(suggestions)
     except Exception as e:
