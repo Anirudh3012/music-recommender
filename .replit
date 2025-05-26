@@ -9,7 +9,6 @@ packages = ["glibcLocales"]
 run = ["sh", "-c", "python -m music_recommender.main"]
 
 [workflows]
-runButton = "Run Web App"
 
 [[workflows.workflow]]
 name = "Run Web App"
