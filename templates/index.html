@@ -23,9 +23,24 @@
 
         /* Nothing OS Theme Variables */
         body.nothing-theme {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #000000;
             color: #ffffff;
+            font-weight: 300;
+        }
+
+        /* Dot Matrix Pattern Background */
+        body.nothing-theme::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .theme-toggle {
@@ -53,8 +68,19 @@
         }
 
         .nothing-theme .theme-toggle {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0;
+            padding: 12px 24px;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .nothing-theme .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: none;
         }
 
         .container {
@@ -74,7 +100,8 @@
             border-radius: 0;
             box-shadow: none;
             border: none;
-            border-top: 2px solid #ffffff;
+            max-width: none;
+            margin: 0;
         }
 
         .header {
@@ -118,8 +145,9 @@
 
         .nothing-theme .header {
             background: #000000;
-            border-bottom: 1px solid #333333;
-            padding: 60px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 80px 40px;
+            text-align: left;
         }
 
         .nothing-theme .header::before {
@@ -127,18 +155,21 @@
         }
 
         .nothing-theme .header h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            font-weight: 100;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            margin-bottom: 8px;
+            line-height: 0.9;
         }
 
         .nothing-theme .header p {
-            font-size: 1rem;
-            opacity: 0.7;
+            font-size: 14px;
+            opacity: 0.6;
             font-weight: 300;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 24px;
         }
 
         .content {
@@ -187,23 +218,25 @@
         .nothing-theme .song-input {
             background: transparent;
             border: none;
-            border-bottom: 2px solid #333333;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 0;
-            padding: 20px 0;
-            font-size: 18px;
+            padding: 24px 0;
+            font-size: 16px;
             font-weight: 300;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
         }
 
         .nothing-theme .song-input:focus {
             border-bottom-color: #ffffff;
             box-shadow: none;
             background: transparent;
+            outline: none;
         }
 
         .nothing-theme .song-input::placeholder {
             color: rgba(255, 255, 255, 0.4);
             font-weight: 300;
+            letter-spacing: 0.02em;
         }
 
         .suggestions {
@@ -225,10 +258,11 @@
 
         .nothing-theme .suggestions {
             background: #000000;
-            border: 1px solid #333333;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0;
             box-shadow: none;
             backdrop-filter: none;
+            border-top: none;
         }
 
         .suggestion-item {
@@ -243,7 +277,11 @@
         }
 
         .suggestion-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nothing-theme .suggestion-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
         }
 
         .suggestion-item:last-child {
@@ -302,23 +340,28 @@
 
         .nothing-theme .song-tag {
             background: transparent;
-            border: 1px solid #333333;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 0;
-            padding: 12px 20px;
+            padding: 8px 16px;
             font-weight: 300;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
             backdrop-filter: none;
+            font-size: 13px;
         }
 
         .nothing-theme .content {
             padding: 60px 40px;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .nothing-theme .section-title {
             font-weight: 300;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.02em;
             text-transform: uppercase;
-            font-size: 1.2rem;
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 32px;
         }
 
         .song-tag-album-art {
@@ -380,25 +423,28 @@
 
         .nothing-theme .get-recommendations-btn {
             background: transparent;
-            border: 2px solid #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0;
-            padding: 18px 40px;
+            padding: 16px 32px;
             font-weight: 300;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             box-shadow: none;
+            font-size: 12px;
+            margin-top: 40px;
         }
 
         .nothing-theme .get-recommendations-btn:hover {
-            background: #ffffff;
-            color: #000000;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #ffffff;
+            color: #ffffff;
             transform: none;
             box-shadow: none;
         }
 
         .nothing-theme .get-recommendations-btn:disabled {
-            border-color: #333333;
-            color: #333333;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.3);
             background: transparent;
         }
 
@@ -442,6 +488,20 @@
             gap: 20px;
         }
 
+        .nothing-theme .recommendation-grid {
+            display: block;
+            gap: 0;
+        }
+
+        .nothing-theme .recommendation-grid .recommendation-card {
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .nothing-theme .recommendation-grid .recommendation-card:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
         .recommendation-card {
             background: rgba(44, 44, 46, 0.8);
             border-radius: 16px;
@@ -460,17 +520,72 @@
         }
 
         .nothing-theme .recommendation-card {
-            background: #000000;
-            border: 1px solid #333333;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 0;
             box-shadow: none;
             backdrop-filter: none;
+            margin-bottom: 1px;
         }
 
         .nothing-theme .recommendation-card:hover {
             transform: none;
-            border-color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
             box-shadow: none;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .nothing-theme .recommendation-card h3 {
+            font-weight: 300;
+            font-size: 1.1rem;
+            letter-spacing: 0.01em;
+        }
+
+        .nothing-theme .recommendation-card .artist {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nothing-theme .recommendation-card .justification {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .nothing-theme .album-art {
+            background: rgba(255, 255, 255, 0.05);
+            height: 160px;
+        }
+
+        .nothing-theme .streaming-btn {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: #ffffff;
+            border-radius: 0;
+            padding: 6px 12px;
+            font-size: 10px;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .nothing-theme .streaming-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #ffffff;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nothing-theme .recommendations h2 {
+            font-weight: 100;
+            font-size: 2rem;
+            text-align: left;
+            margin-bottom: 40px;
+            letter-spacing: 0.02em;
         }
 
         .album-art {
