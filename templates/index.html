@@ -18,6 +18,43 @@
             color: #ffffff;
             min-height: 100vh;
             padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Nothing OS Theme Variables */
+        body.nothing-theme {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 8px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nothing-theme .theme-toggle {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .container {
@@ -29,6 +66,15 @@
             backdrop-filter: blur(20px);
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nothing-theme .container {
+            background: #000000;
+            border-radius: 0;
+            box-shadow: none;
+            border: none;
+            border-top: 2px solid #ffffff;
         }
 
         .header {
@@ -37,6 +83,7 @@
             padding: 40px;
             text-align: center;
             position: relative;
+            transition: all 0.3s ease;
         }
 
         .header::before {
@@ -60,12 +107,38 @@
             margin-bottom: 10px;
             font-weight: 600;
             letter-spacing: -0.02em;
+            transition: all 0.3s ease;
         }
 
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
             font-weight: 400;
+        }
+
+        .nothing-theme .header {
+            background: #000000;
+            border-bottom: 1px solid #333333;
+            padding: 60px 40px;
+        }
+
+        .nothing-theme .header::before {
+            display: none;
+        }
+
+        .nothing-theme .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .nothing-theme .header p {
+            font-size: 1rem;
+            opacity: 0.7;
+            font-weight: 300;
+            letter-spacing: 0.05em;
         }
 
         .content {
@@ -111,6 +184,28 @@
             box-shadow: 0 0 0 4px rgba(255, 23, 68, 0.1);
         }
 
+        .nothing-theme .song-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333333;
+            border-radius: 0;
+            padding: 20px 0;
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .nothing-theme .song-input:focus {
+            border-bottom-color: #ffffff;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .nothing-theme .song-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 300;
+        }
+
         .suggestions {
             position: absolute;
             top: 100%;
@@ -125,6 +220,15 @@
             display: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .nothing-theme .suggestions {
+            background: #000000;
+            border: 1px solid #333333;
+            border-radius: 0;
+            box-shadow: none;
+            backdrop-filter: none;
         }
 
         .suggestion-item {
@@ -193,6 +297,28 @@
             border: 1px solid rgba(255, 23, 68, 0.3);
             backdrop-filter: blur(10px);
             gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nothing-theme .song-tag {
+            background: transparent;
+            border: 1px solid #333333;
+            border-radius: 0;
+            padding: 12px 20px;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+            backdrop-filter: none;
+        }
+
+        .nothing-theme .content {
+            padding: 60px 40px;
+        }
+
+        .nothing-theme .section-title {
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 1.2rem;
         }
 
         .song-tag-album-art {
@@ -252,6 +378,30 @@
             transform: none;
         }
 
+        .nothing-theme .get-recommendations-btn {
+            background: transparent;
+            border: 2px solid #ffffff;
+            border-radius: 0;
+            padding: 18px 40px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            box-shadow: none;
+        }
+
+        .nothing-theme .get-recommendations-btn:hover {
+            background: #ffffff;
+            color: #000000;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .nothing-theme .get-recommendations-btn:disabled {
+            border-color: #333333;
+            color: #333333;
+            background: transparent;
+        }
+
         .loading {
             display: none;
             text-align: center;
@@ -307,6 +457,20 @@
             transform: translateY(-8px);
             box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
             border-color: rgba(255, 23, 68, 0.3);
+        }
+
+        .nothing-theme .recommendation-card {
+            background: #000000;
+            border: 1px solid #333333;
+            border-radius: 0;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        .nothing-theme .recommendation-card:hover {
+            transform: none;
+            border-color: #ffffff;
+            box-shadow: none;
         }
 
         .album-art {
@@ -470,6 +634,11 @@
 </head>
 <body>
     <div class="container">
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-icon">🎨</span>
+            <span id="theme-text">Nothing OS</span>
+        </div>
+        
         <div class="header">
             <div class="header-content">
                 <h1>🎵 Music Recommender</h1>
@@ -509,6 +678,39 @@
     <script>
         let selectedSongs = [];
         let searchTimeout;
+        let isNothingTheme = false;
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            isNothingTheme = !isNothingTheme;
+            
+            if (isNothingTheme) {
+                body.classList.add('nothing-theme');
+                themeIcon.textContent = '🎵';
+                themeText.textContent = 'Apple Music';
+                localStorage.setItem('musicRecommenderTheme', 'nothing');
+            } else {
+                body.classList.remove('nothing-theme');
+                themeIcon.textContent = '🎨';
+                themeText.textContent = 'Nothing OS';
+                localStorage.setItem('musicRecommenderTheme', 'apple');
+            }
+        }
+
+        // Load saved theme on page load
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('musicRecommenderTheme');
+            if (savedTheme === 'nothing') {
+                toggleTheme();
+            }
+        }
+
+        // Load theme when page loads
+        document.addEventListener('DOMContentLoaded', loadSavedTheme);
 
         const songInput = document.getElementById('songInput');
         const suggestions = document.getElementById('suggestions');
