@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommender</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .song-input-section {
+            margin-bottom: 40px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .song-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .song-input:focus {
+            border-color: #667eea;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .selected-songs {
+            margin: 20px 0;
+        }
+
+        .song-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .song-tag .remove {
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .get-recommendations-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .get-recommendations-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .get-recommendations-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .recommendations {
+            margin-top: 40px;
+            display: none;
+        }
+
+        .recommendations h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .recommendation-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .recommendation-card h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .recommendation-card .artist {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-card .justification {
+            color: #666;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .recommendation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Music Recommender</h1>
+            <p>Discover new music based on your favorite songs</p>
+        </div>
+        
+        <div class="content">
+            <div class="song-input-section">
+                <h2>Add Your Favorite Songs</h2>
+                <div class="input-group">
+                    <input type="text" class="song-input" id="songInput" placeholder="Start typing a song name...">
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+                
+                <div class="selected-songs" id="selectedSongs"></div>
+                
+                <button class="get-recommendations-btn" id="getRecommendationsBtn" disabled>
+                    Get Recommendations
+                </button>
+            </div>
+            
+            <div class="error" id="error"></div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your music taste and generating recommendations...</p>
+            </div>
+            
+            <div class="recommendations" id="recommendations">
+                <h2>Your Personalized Recommendations</h2>
+                <div class="recommendation-grid" id="recommendationGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedSongs = [];
+        let searchTimeout;
+
+        const songInput = document.getElementById('songInput');
+        const suggestions = document.getElementById('suggestions');
+        const selectedSongsContainer = document.getElementById('selectedSongs');
+        const getRecommendationsBtn = document.getElementById('getRecommendationsBtn');
+        const loading = document.getElementById('loading');
+        const recommendations = document.getElementById('recommendations');
+        const recommendationGrid = document.getElementById('recommendationGrid');
+        const errorDiv = document.getElementById('error');
+
+        songInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchSongs(query);
+            }, 300);
+        });
+
+        songInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.input-group')) {
+                suggestions.style.display = 'none';
+            }
+        });
+
+        async function searchSongs(query) {
+            try {
+                const response = await fetch(`/search_songs?query=${encodeURIComponent(query)}`);
+                const songs = await response.json();
+                
+                suggestions.innerHTML = '';
+                
+                if (songs.length > 0) {
+                    songs.forEach(song => {
+                        if (!selectedSongs.some(s => s.id === song.id)) {
+                            const item = document.createElement('div');
+                            item.className = 'suggestion-item';
+                            item.textContent = song.display;
+                            item.addEventListener('click', () => selectSong(song));
+                            suggestions.appendChild(item);
+                        }
+                    });
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                suggestions.style.display = 'none';
+            }
+        }
+
+        function selectSong(song) {
+            if (!selectedSongs.some(s => s.id === song.id)) {
+                selectedSongs.push(song);
+                updateSelectedSongs();
+                songInput.value = '';
+                suggestions.style.display = 'none';
+            }
+        }
+
+        function removeSong(songId) {
+            selectedSongs = selectedSongs.filter(s => s.id !== songId);
+            updateSelectedSongs();
+        }
+
+        function updateSelectedSongs() {
+            selectedSongsContainer.innerHTML = '';
+            
+            selectedSongs.forEach(song => {
+                const tag = document.createElement('span');
+                tag.className = 'song-tag';
+                tag.innerHTML = `${song.display} <span class="remove" onclick="removeSong('${song.id}')">×</span>`;
+                selectedSongsContainer.appendChild(tag);
+            });
+
+            getRecommendationsBtn.disabled = selectedSongs.length === 0;
+        }
+
+        getRecommendationsBtn.addEventListener('click', async function() {
+            if (selectedSongs.length === 0) return;
+
+            showError('');
+            loading.style.display = 'block';
+            recommendations.style.display = 'none';
+            
+            try {
+                const response = await fetch('/get_recommendations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ songs: selectedSongs })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else if (data.recommendations) {
+                    displayRecommendations(data.recommendations);
+                } else {
+                    showError('No recommendations received');
+                }
+            } catch (error) {
+                showError('Failed to get recommendations. Please try again.');
+                console.error('Recommendation error:', error);
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        function displayRecommendations(recs) {
+            recommendationGrid.innerHTML = '';
+            
+            recs.forEach((rec, index) => {
+                const card = document.createElement('div');
+                card.className = 'recommendation-card';
+                card.innerHTML = `
+                    <h3>${rec.title || 'Unknown Title'}</h3>
+                    <div class="artist">by ${rec.artist || 'Unknown Artist'}</div>
+                    <div class="justification">${rec.justification || 'No description available'}</div>
+                `;
+                recommendationGrid.appendChild(card);
+            });
+            
+            recommendations.style.display = 'block';
+            recommendations.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            if (message) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+            } else {
+                errorDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

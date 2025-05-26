@@ -7,3 +7,15 @@ packages = ["glibcLocales"]
 
 [deployment]
 run = ["sh", "-c", "python -m music_recommender.main"]
+
+[workflows]
+runButton = "Run Web App"
+
+[[workflows.workflow]]
+name = "Run Web App"
+author = 41463219
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python app.py"
