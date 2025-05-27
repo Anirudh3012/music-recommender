@@ -147,8 +147,6 @@ def get_recommendations():
             except:
                 pass
 
-            song_data['lyrics'] = lyrics
-
             song_data = {
                 'original_input_title': song['name'],
                 'original_input_artist': song['artist'],
