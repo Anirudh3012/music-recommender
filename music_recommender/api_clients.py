@@ -143,6 +143,8 @@ def get_genius_client():
 
 # --- Last.fm API Client ---
 import pylast
+import requests
+import json
 
 def get_lastfm_network():
     """
@@ -191,6 +193,116 @@ def get_openai_client():
         print("--- Full Traceback --- ")
         traceback.print_exc()
         print("--- End Traceback --- ")
+        return None
+
+# --- LyricsOVH API (Alternative to Genius) ---
+def get_lyrics_lyricsovh(artist, title):
+    """
+    Fetches lyrics using the LyricsOVH API (free, no API key required).
+    
+    Args:
+        artist (str): Artist name
+        title (str): Song title
+        
+    Returns:
+        str: Lyrics text or None if not found
+    """
+    try:
+        # Clean artist and title
+        clean_artist = artist.strip()
+        clean_title = title.strip()
+        
+        # LyricsOVH API endpoint
+        url = f"https://api.lyrics.ovh/v1/{clean_artist}/{clean_title}"
+        
+        print(f"LyricsOVH: Searching for lyrics: '{clean_title}' by '{clean_artist}'")
+        
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            lyrics = data.get('lyrics')
+            if lyrics:
+                print(f"LyricsOVH: Found lyrics for '{clean_title}' by '{clean_artist}'")
+                return lyrics.strip()
+            else:
+                print(f"LyricsOVH: No lyrics found for '{clean_title}' by '{clean_artist}'")
+                return None
+        else:
+            print(f"LyricsOVH: API returned status {response.status_code} for '{clean_title}' by '{clean_artist}'")
+            return None
+            
+    except requests.exceptions.RequestException as e:
+        print(f"LyricsOVH: Network error fetching lyrics for '{clean_title}' by '{clean_artist}': {e}")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"LyricsOVH: JSON decode error for '{clean_title}' by '{clean_artist}': {e}")
+        return None
+    except Exception as e:
+        print(f"LyricsOVH: Unexpected error fetching lyrics for '{clean_title}' by '{clean_artist}': {e}")
+        return None
+
+# --- Musixmatch API (Requires API key) ---
+def get_lyrics_musixmatch(artist, title, api_key=None):
+    """
+    Fetches lyrics using Musixmatch API (requires API key).
+    
+    Args:
+        artist (str): Artist name
+        title (str): Song title
+        api_key (str): Musixmatch API key
+        
+    Returns:
+        str: Lyrics text or None if not found
+    """
+    if not api_key:
+        print("Musixmatch: API key not provided")
+        return None
+        
+    try:
+        # Search for track first
+        search_url = "https://api.musixmatch.com/ws/1.1/track.search"
+        search_params = {
+            'apikey': api_key,
+            'q_artist': artist,
+            'q_track': title,
+            'page_size': 1,
+            'page': 1,
+            's_track_rating': 'desc'
+        }
+        
+        search_response = requests.get(search_url, params=search_params, timeout=10)
+        
+        if search_response.status_code == 200:
+            search_data = search_response.json()
+            track_list = search_data.get('message', {}).get('body', {}).get('track_list', [])
+            
+            if track_list:
+                track_id = track_list[0]['track']['track_id']
+                
+                # Get lyrics using track ID
+                lyrics_url = "https://api.musixmatch.com/ws/1.1/track.lyrics.get"
+                lyrics_params = {
+                    'apikey': api_key,
+                    'track_id': track_id
+                }
+                
+                lyrics_response = requests.get(lyrics_url, params=lyrics_params, timeout=10)
+                
+                if lyrics_response.status_code == 200:
+                    lyrics_data = lyrics_response.json()
+                    lyrics_body = lyrics_data.get('message', {}).get('body', {}).get('lyrics', {})
+                    lyrics_text = lyrics_body.get('lyrics_body')
+                    
+                    if lyrics_text:
+                        print(f"Musixmatch: Found lyrics for '{title}' by '{artist}'")
+                        return lyrics_text.strip()
+                    
+        print(f"Musixmatch: No lyrics found for '{title}' by '{artist}'")
+        return None
+        
+    except Exception as e:
+        print(f"Musixmatch: Error fetching lyrics for '{title}' by '{artist}': {e}")
         return None
 
 if __name__ == '__main__':

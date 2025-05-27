@@ -1,6 +1,6 @@
 import requests
 import re
-from .api_clients import get_spotify_client, get_genius_client, get_lastfm_network, get_openai_client
+from .api_clients import get_spotify_client, get_genius_client, get_lastfm_network, get_openai_client, get_lyrics_lyricsovh
 from .recommender import get_lastfm_recommendations_for_track, calculate_song_content_similarity, get_holistic_llm_recommendations
 from .lyrics_analyzer import get_lyrical_insights, get_rich_lyrical_insights
 from .llm_enhancer import augment_song_details_with_llm
@@ -164,20 +164,19 @@ def run_recommender():
             except Exception as e:
                 print(f"  Spotify: Error fetching artist genre details for {spotify_track_info['name']}: {e}")
 
-            # Fetch lyrics if Genius client is available
-            if genius_client:
-                # Use the primary artist from Spotify for Genius search for better accuracy
-                primary_artist_name = spotify_track_info['artists'].split(',')[0].strip()
-                lyrics = get_lyrics(genius_client, spotify_track_info['name'], primary_artist_name)
-                if lyrics:
-                    current_song_data["lyrics"] = lyrics
-                    lyrics_insights = None
-                    if lyrics and openai_client: # Only analyze if lyrics and client are available
-                        print(f"Analyzing lyrics for '{spotify_track_info['name']}' with OpenAI...")
-                        lyrics_insights = get_lyrical_insights(lyrics)
-                    current_song_data["lyrical_insights"] = lyrics_insights if lyrics_insights else {"themes": [], "sentiments": [], "keywords": [], "overall_summary": "Analysis not performed or failed."}
-                # else: # Already printed by get_lyrics
-                    # print(f"  Genius: No lyrics found for {spotify_track_info['name']}.")
+            # Fetch lyrics using LyricsOVH (free alternative to Genius)
+            primary_artist_name = spotify_track_info['artists'].split(',')[0].strip()
+            lyrics = get_lyrics_lyricsovh(primary_artist_name, spotify_track_info['name'])
+            if lyrics:
+                current_song_data["lyrics"] = lyrics
+                lyrics_insights = None
+                if lyrics and openai_client: # Only analyze if lyrics and client are available
+                    print(f"Analyzing lyrics for '{spotify_track_info['name']}' with OpenAI...")
+                    lyrics_insights = get_lyrical_insights(lyrics)
+                current_song_data["lyrical_insights"] = lyrics_insights if lyrics_insights else {"themes": [], "sentiments": [], "keywords": [], "overall_summary": "Analysis not performed or failed."}
+            else:
+                current_song_data["lyrics"] = None
+                current_song_data["lyrical_insights"] = {"themes": [], "sentiments": [], "keywords": [], "overall_summary": "No lyrics found."}
         else:
             print(f"  Spotify: Could not find a match for '{current_query_string}'.")
         

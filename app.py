@@ -1,7 +1,6 @@
-
 from flask import Flask, render_template, request, jsonify
 import json
-from music_recommender.api_clients import get_spotify_client, get_genius_client, get_lastfm_network, get_openai_client
+from music_recommender.api_clients import get_spotify_client, get_genius_client, get_openai_client, get_lyrics_lyricsovh
 from music_recommender.main import search_spotify_track, get_lyrics
 from music_recommender.lyrics_analyzer import get_lyrical_insights
 from music_recommender.llm_enhancer import augment_song_details_with_llm
@@ -31,7 +30,7 @@ def search_songs():
     query = request.args.get('query', '').strip()
     if not query or not sp_client:
         return jsonify([])
-    
+
     try:
         results = sp_client.search(q=query, type='track', limit=10)
         suggestions = []
@@ -41,7 +40,7 @@ def search_songs():
             if track['album']['images']:
                 # Try to get medium-sized image (usually index 1), fallback to first available
                 album_art_url = track['album']['images'][1]['url'] if len(track['album']['images']) > 1 else track['album']['images'][0]['url']
-            
+
             suggestions.append({
                 'id': track['id'],
                 'name': track['name'],
@@ -58,15 +57,15 @@ def search_songs():
 def get_album_art():
     artist = request.args.get('artist', '').strip()
     title = request.args.get('title', '').strip()
-    
+
     if not artist or not title or not sp_client:
         return jsonify({'album_art_url': None})
-    
+
     try:
         # Search for the track on Spotify to get album art
         search_query = f"artist:{artist} track:{title}"
         results = sp_client.search(q=search_query, type='track', limit=1)
-        
+
         if results['tracks']['items']:
             track = results['tracks']['items'][0]
             album_images = track['album']['images']
@@ -74,7 +73,7 @@ def get_album_art():
                 # Get the medium-sized image (usually index 1, or fallback to first)
                 album_art_url = album_images[1]['url'] if len(album_images) > 1 else album_images[0]['url']
                 return jsonify({'album_art_url': album_art_url})
-        
+
         return jsonify({'album_art_url': None})
     except Exception as e:
         print(f"Album art error for {artist} - {title}: {e}")
@@ -83,22 +82,22 @@ def get_album_art():
 def generate_streaming_links(artist, title):
     """Generate streaming service links for a song"""
     import urllib.parse
-    
+
     # Clean up artist and title for URL encoding
     clean_artist = artist.replace(' & ', ' ').replace('&', 'and')
     clean_title = title
-    
+
     # URL encode for safe usage in URLs
     encoded_artist = urllib.parse.quote_plus(clean_artist)
     encoded_title = urllib.parse.quote_plus(clean_title)
     encoded_query = urllib.parse.quote_plus(f"{clean_artist} {clean_title}")
-    
+
     links = {
         'spotify': f"https://open.spotify.com/search/{encoded_query}",
         'apple_music': f"https://music.apple.com/search?term={encoded_query}",
         'youtube': f"https://www.youtube.com/results?search_query={encoded_query}"
     }
-    
+
     # Try to get exact Spotify link if possible
     if sp_client:
         try:
@@ -111,17 +110,17 @@ def generate_streaming_links(artist, title):
                     links['spotify'] = spotify_url
         except Exception as e:
             print(f"Could not get exact Spotify link for {artist} - {title}: {e}")
-    
+
     return links
 
 @app.route('/get_recommendations', methods=['POST'])
 def get_recommendations():
     data = request.get_json()
     selected_songs = data.get('songs', [])
-    
+
     if not selected_songs or not openai_client:
         return jsonify({'error': 'No songs provided or OpenAI client unavailable'})
-    
+
     try:
         # Process selected songs
         processed_songs = []
@@ -131,7 +130,7 @@ def get_recommendations():
                 'name': song['name'],
                 'artists': song['artist']
             }
-            
+
             # Get artist genres
             try:
                 track_details = sp_client.track(song['id'])
@@ -140,13 +139,16 @@ def get_recommendations():
                 artist_genres = artist_info.get('genres', [])
             except:
                 artist_genres = []
-            
-            # Get lyrics
+
+            # Get lyrics from LyricsOVH (free alternative)
             lyrics = None
-            if genius_client:
-                primary_artist = song['artist'].split(',')[0].strip()
-                lyrics = get_lyrics(genius_client, song['name'], primary_artist)
-            
+            try:
+                lyrics = get_lyrics_lyricsovh(song['artist'], song['name'])
+            except:
+                pass
+
+            song_data['lyrics'] = lyrics
+
             song_data = {
                 'original_input_title': song['name'],
                 'original_input_artist': song['artist'],
@@ -155,7 +157,7 @@ def get_recommendations():
                 'lyrics': lyrics,
                 'lyrical_insights': None
             }
-            
+
             # Analyze lyrics if available
             if lyrics and openai_client:
                 try:
@@ -163,9 +165,9 @@ def get_recommendations():
                     song_data['lyrical_insights'] = insights
                 except:
                     pass
-            
+
             processed_songs.append(song_data)
-        
+
         # Enrich songs with LLM
         enriched_songs = []
         for song_data in processed_songs:
@@ -181,23 +183,23 @@ def get_recommendations():
             except:
                 pass
             enriched_songs.append(song_data)
-        
+
         # Generate recommendations
         recommendations = get_holistic_llm_recommendations(
             liked_songs_enriched_details=enriched_songs,
             openai_client=openai_client
         )
-        
+
         if recommendations:
             # Add streaming links to each recommendation
             for rec in recommendations:
                 if 'artist' in rec and 'title' in rec:
                     rec['streaming_links'] = generate_streaming_links(rec['artist'], rec['title'])
-            
+
             return jsonify({'recommendations': recommendations})
         else:
             return jsonify({'error': 'Could not generate recommendations'})
-            
+
     except Exception as e:
         print(f"Recommendation error: {e}")
         return jsonify({'error': f'An error occurred: {str(e)}'})
