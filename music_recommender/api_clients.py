@@ -43,7 +43,8 @@ SCOPES = [
     "playlist-modify-public",
     "playlist-modify-private",
     "user-read-private",
-    # "user-follow-read", # Example: if you want to check followed artists
+    "playlist-read-private",
+    "user-follow-read",
 ]
 
 def get_spotify_client(enable_http_debug=False):

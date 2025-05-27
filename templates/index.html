@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -709,11 +708,11 @@
             .header h1 {
                 font-size: 2.5rem;
             }
-            
+
             .content {
                 padding: 20px;
             }
-            
+
             .recommendation-grid {
                 grid-template-columns: 1fr;
             }
@@ -745,6 +744,135 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 23, 68, 0.8);
         }
+
+        /* Playlist Creation Styles */
+        .playlist-creation {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 23, 68, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .playlist-creation h3 {
+            color: #ff1744;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .playlist-input-group {
+            margin-bottom: 20px;
+        }
+
+        .playlist-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 23, 68, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .playlist-input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .playlist-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .playlist-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            flex: 1;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .spotify-btn {
+            background: linear-gradient(135deg, #1db954 0%, #1ed760 100%);
+            color: white;
+        }
+
+        .spotify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(29, 185, 84, 0.4);
+        }
+
+        .apple-music-btn {
+            background: linear-gradient(135deg, #fa2d48 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        .apple-music-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(250, 45, 72, 0.4);
+        }
+
+        .playlist-status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .playlist-status.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            display: block;
+        }
+
+        .playlist-status.error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+            display: block;
+        }
+
+        /* Nothing OS Playlist Styles */
+        .nothing-theme .playlist-creation {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: none;
+        }
+
+        .nothing-theme .playlist-creation h3 {
+            color: #000;
+        }
+
+        .nothing-theme .playlist-input-group input {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: #000;
+            backdrop-filter: none;
+        }
+
+        .nothing-theme .playlist-input-group input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Nothing OS Error Styles */
+        .nothing-os .error {
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid rgba(255, 59, 48, 0.3);
+            color: #ff3b30;
+        }
     </style>
 </head>
 <body>
@@ -753,14 +881,14 @@
             <span id="theme-icon">🎨</span>
             <span id="theme-text">Nothing OS</span>
         </div>
-        
+
         <div class="header">
             <div class="header-content">
                 <h1>🎵 Music Recommender</h1>
                 <p>Discover new music based on your favorite songs</p>
             </div>
         </div>
-        
+
         <div class="content">
             <div class="song-input-section">
                 <h2 class="section-title">Add Your Favorite Songs</h2>
@@ -768,24 +896,41 @@
                     <input type="text" class="song-input" id="songInput" placeholder="Start typing a song name...">
                     <div class="suggestions" id="suggestions"></div>
                 </div>
-                
+
                 <div class="selected-songs" id="selectedSongs"></div>
-                
+
                 <button class="get-recommendations-btn" id="getRecommendationsBtn" disabled>
                     Get Recommendations
                 </button>
             </div>
-            
+
             <div class="error" id="error"></div>
-            
+
             <div class="loading" id="loading">
                 <div class="spinner"></div>
                 <p>Analyzing your music taste and generating recommendations...</p>
             </div>
-            
-            <div class="recommendations" id="recommendations">
-                <h2>Your Personalized Recommendations</h2>
-                <div class="recommendation-grid" id="recommendationGrid"></div>
+
+            <div class="recommendations" id="recommendations"></div>
+
+            <div class="playlist-creation" id="playlistCreation" style="display: none;">
+                <h3>Save to Playlist</h3>
+                <div class="playlist-options">
+                    <div class="playlist-input-group">
+                        <input type="text" id="playlistName" placeholder="Enter playlist name..." value="Music Recommender Playlist">
+                    </div>
+                    <div class="playlist-buttons">
+                        <button class="playlist-btn spotify-btn" onclick="createSpotifyPlaylist()">
+                            <span class="spotify-icon">🎵</span>
+                            Save to Spotify
+                        </button>
+                        <button class="playlist-btn apple-music-btn" onclick="createAppleMusicPlaylist()">
+                            <span class="apple-icon">🍎</span>
+                            Save to Apple Music
+                        </button>
+                    </div>
+                </div>
+                <div class="playlist-status" id="playlistStatus"></div>
             </div>
         </div>
     </div>
@@ -800,9 +945,9 @@
             const body = document.body;
             const themeIcon = document.getElementById('theme-icon');
             const themeText = document.getElementById('theme-text');
-            
+
             isNothingTheme = !isNothingTheme;
-            
+
             if (isNothingTheme) {
                 body.classList.add('nothing-theme');
                 themeIcon.textContent = '🎵';
@@ -838,7 +983,7 @@
 
         songInput.addEventListener('input', function() {
             const query = this.value.trim();
-            
+
             if (query.length < 2) {
                 suggestions.style.display = 'none';
                 return;
@@ -866,19 +1011,19 @@
             try {
                 const response = await fetch(`/search_songs?query=${encodeURIComponent(query)}`);
                 const songs = await response.json();
-                
+
                 suggestions.innerHTML = '';
-                
+
                 if (songs.length > 0) {
                     songs.forEach(song => {
                         if (!selectedSongs.some(s => s.id === song.id)) {
                             const item = document.createElement('div');
                             item.className = 'suggestion-item';
-                            
+
                             // Create album art element
                             const albumArt = document.createElement('div');
                             albumArt.className = 'suggestion-album-art';
-                            
+
                             if (song.album_art_url) {
                                 const img = document.createElement('img');
                                 img.src = song.album_art_url;
@@ -895,22 +1040,22 @@
                             } else {
                                 albumArt.textContent = '🎵';
                             }
-                            
+
                             // Create text content
                             const textDiv = document.createElement('div');
                             textDiv.className = 'suggestion-text';
-                            
+
                             const titleDiv = document.createElement('div');
                             titleDiv.className = 'song-title';
                             titleDiv.textContent = song.name;
-                            
+
                             const artistDiv = document.createElement('div');
                             artistDiv.className = 'artist-name';
                             artistDiv.textContent = song.artist;
-                            
+
                             textDiv.appendChild(titleDiv);
                             textDiv.appendChild(artistDiv);
-                            
+
                             item.appendChild(albumArt);
                             item.appendChild(textDiv);
                             item.addEventListener('click', () => selectSong(song));
@@ -943,15 +1088,15 @@
 
         function updateSelectedSongs() {
             selectedSongsContainer.innerHTML = '';
-            
+
             selectedSongs.forEach(song => {
                 const tag = document.createElement('span');
                 tag.className = 'song-tag';
-                
+
                 // Create album art element
                 const albumArt = document.createElement('div');
                 albumArt.className = 'song-tag-album-art';
-                
+
                 if (song.album_art_url) {
                     const img = document.createElement('img');
                     img.src = song.album_art_url;
@@ -968,18 +1113,18 @@
                 } else {
                     albumArt.textContent = '🎵';
                 }
-                
+
                 // Create text content
                 const textSpan = document.createElement('span');
                 textSpan.className = 'song-tag-text';
                 textSpan.textContent = song.display;
-                
+
                 // Create remove button
                 const removeSpan = document.createElement('span');
                 removeSpan.className = 'remove';
                 removeSpan.textContent = '×';
                 removeSpan.onclick = () => removeSong(song.id);
-                
+
                 tag.appendChild(albumArt);
                 tag.appendChild(textSpan);
                 tag.appendChild(removeSpan);
@@ -995,7 +1140,7 @@
             showError('');
             loading.style.display = 'block';
             recommendations.style.display = 'none';
-            
+
             try {
                 const response = await fetch('/get_recommendations', {
                     method: 'POST',
@@ -1006,11 +1151,15 @@
                 });
 
                 const data = await response.json();
-                
+
                 if (data.error) {
                     showError(data.error);
                 } else if (data.recommendations) {
                     displayRecommendations(data.recommendations);
+                     // Show playlist creation options
+                document.getElementById('playlistCreation').style.display = 'block';
+                // Store recommendations globally for playlist creation
+                window.currentRecommendations = data.recommendations;
                 } else {
                     showError('No recommendations received');
                 }
@@ -1035,14 +1184,14 @@
 
         async function displayRecommendations(recs) {
             recommendationGrid.innerHTML = '';
-            
+
             for (const [index, rec] of recs.entries()) {
                 const card = document.createElement('div');
                 card.className = 'recommendation-card';
-                
+
                 // Try to get album art
                 const albumArtUrl = await getAlbumArt(rec.artist || 'Unknown Artist', rec.title || 'Unknown Title');
-                
+
                 // Generate streaming links HTML
                 let streamingLinksHtml = '';
                 if (rec.streaming_links) {
@@ -1078,7 +1227,7 @@
                 `;
                 recommendationGrid.appendChild(card);
             }
-            
+
             recommendations.style.display = 'block';
             recommendations.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1091,6 +1240,100 @@
                 errorDiv.style.display = 'none';
             }
         }
-    </script>
+
+         // Playlist Creation Functions
+        async function createSpotifyPlaylist() {
+            const playlistName = document.getElementById('playlistName').value.trim() || 'Music Recommender Playlist';
+            const statusDiv = document.getElementById('playlistStatus');
+
+            if (!window.currentRecommendations) {
+                showPlaylistStatus('error', 'No recommendations available');
+                return;
+            }
+
+            try {
+                statusDiv.style.display = 'none';
+                const response = await fetch('/create_spotify_playlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        playlist_name: playlistName,
+                        recommendations: window.currentRecommendations
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    let message = `✅ Playlist "${result.playlist_name}" created successfully! ${result.tracks_added} tracks added.`;
+                    if (result.tracks_not_found && result.tracks_not_found.length > 0) {
+                        message += ` Note: ${result.tracks_not_found.length} tracks couldn't be found on Spotify.`;
+                    }
+                    message += ` <a href="${result.playlist_url}" target="_blank" style="color: #1db954; text-decoration: underline;">Open in Spotify</a>`;
+                    showPlaylistStatus('success', message);
+                } else {
+                    showPlaylistStatus('error', result.error || 'Failed to create Spotify playlist');
+                }
+            } catch (error) {
+                console.error('Spotify playlist error:', error);
+                showPlaylistStatus('error', 'Network error creating Spotify playlist');
+            }
+        }
+
+        async function createAppleMusicPlaylist() {
+            const statusDiv = document.getElementById('playlistStatus');
+
+            // Check if MusicKit is available
+            if (typeof MusicKit === 'undefined') {
+                showPlaylistStatus('error', 'Apple Music integration requires MusicKit JS. Please enable it in your browser.');
+                return;
+            }
+
+            try {
+                statusDiv.style.display = 'none';
+
+                // Configure MusicKit (you'll need to get a developer token from Apple)
+                await MusicKit.configure({
+                    developerToken: 'YOUR_APPLE_MUSIC_DEVELOPER_TOKEN', // This needs to be set up
+                    app: {
+                        name: 'Music Recommender',
+                        build: '1.0.0'
+                    }
+                });
+
+                const music = MusicKit.getInstance();
+                await music.authorize();
+
+                // Create playlist logic would go here
+                showPlaylistStatus('error', 'Apple Music integration is coming soon! For now, you can manually search for these songs in Apple Music.');
+
+            } catch (error) {
+                console.error('Apple Music error:', error);
+                showPlaylistStatus('error', 'Apple Music authentication failed. Please try again.');
+            }
+        }
+
+        function showPlaylistStatus(type, message) {
+            const statusDiv = document.getElementById('playlistStatus');
+            statusDiv.className = `playlist-status ${type}`;
+            statusDiv.innerHTML = message;
+            statusDiv.style.display = 'block';
+        }
+
+        function debounceSearch() {
+            let timer;
+            return function() {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    searchSongs.apply(this, arguments);
+                }, 300);
+            };
+        }
+
+        // Initialize
+       // const debouncedSearch = debounceSearch();
+</script>
 </body>
 </html>
