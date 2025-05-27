@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import json
-from music_recommender.api_clients import get_spotify_client, get_genius_client, get_openai_client, get_lyrics_lyricsovh
+from music_recommender.api_clients import get_spotify_client, get_genius_client, get_openai_client, get_lyrics_lyricsovh, get_lastfm_network
 from music_recommender.main import search_spotify_track, get_lyrics
 from music_recommender.lyrics_analyzer import get_lyrical_insights
 from music_recommender.llm_enhancer import augment_song_details_with_llm
