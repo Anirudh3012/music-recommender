@@ -911,7 +911,10 @@
                 <p>Analyzing your music taste and generating recommendations...</p>
             </div>
 
-            <div class="recommendations" id="recommendations"></div>
+            <div class="recommendations" id="recommendations">
+                <h2>Recommended Songs</h2>
+                <div class="recommendation-grid" id="recommendationGrid"></div>
+            </div>
 
             <div class="playlist-creation" id="playlistCreation" style="display: none;">
                 <h3>Save to Playlist</h3>
@@ -1183,6 +1186,7 @@
         }
 
         async function displayRecommendations(recs) {
+            const recommendationGrid = document.getElementById('recommendationGrid');
             recommendationGrid.innerHTML = '';
 
             for (const [index, rec] of recs.entries()) {
