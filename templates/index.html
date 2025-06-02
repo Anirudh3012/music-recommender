@@ -83,7 +83,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            width: 100%; /* Changed from max-width: 1200px to fit page */
             margin: 0 auto;
             background: rgba(28, 28, 30, 0.95);
             border-radius: 20px;
@@ -134,19 +134,22 @@
             font-weight: 600;
             letter-spacing: -0.02em;
             transition: all 0.3s ease;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4); /* Added for depth */
         }
 
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
             font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Added for depth */
+            text-align: center;
         }
 
         .nothing-theme .header {
             background: #000000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 80px 40px;
-            text-align: left;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3); /* Changed style and opacity */
+            padding: 70px 40px; /* Increased padding */
+            text-align: center;
         }
 
         .nothing-theme .header::before {
@@ -154,19 +157,20 @@
         }
 
         .nothing-theme .header h1 {
-            font-size: 3.5rem;
-            font-weight: 100;
+            font-size: 2.8rem; /* Increased font size */
+            font-weight: 400;
             letter-spacing: 0.02em;
-            text-transform: none;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.25); /* Added subtle glow */
             margin-bottom: 8px;
             line-height: 0.9;
         }
 
         .nothing-theme .header p {
-            font-size: 14px;
-            opacity: 0.6;
+            font-size: 1.1rem; /* Increased font size */
+            opacity: 0.75; /* Increased opacity */
             font-weight: 300;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
             margin-top: 24px;
         }
@@ -177,6 +181,19 @@
 
         .song-input-section {
             margin-bottom: 40px;
+        }
+
+        .recommendations-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff; /* Default theme */
+        }
+
+        .recommendation-grid { /* For recommended songs - default theme */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
         .section-title {
@@ -337,6 +354,12 @@
             transition: all 0.3s ease;
         }
 
+        .nothing-theme .song-tags-grid { /* For selected songs in Nothing OS theme */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px; /* Adjust gap as needed */
+        }
+
         .nothing-theme .song-tag {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -393,6 +416,12 @@
 
         .song-tag .remove:hover {
             opacity: 1;
+        }
+
+        .song-tags-grid { /* For selected songs */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
         .get-recommendations-btn {
@@ -488,8 +517,9 @@
         }
 
         .nothing-theme .recommendation-grid {
-            display: block;
-            gap: 0;
+            display: grid; /* Changed from block */
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            gap: 15px; /* Added a gap, adjust as needed */
         }
 
         .nothing-theme .recommendation-grid .recommendation-card {
